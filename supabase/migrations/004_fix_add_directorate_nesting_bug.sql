@@ -1,0 +1,6 @@
+-- Documents the frontend fix: the "Add Directorate" admin button previously inserted
+-- new directorates with parent_id = NULL, creating orphan second roots instead of
+-- nesting under the candidate's DG. Fixed in index.html's createDirectorate() to look
+-- up the candidate's DG (the row with parent_id IS NULL) and attach new directorates
+-- to it. No schema change required -- RLS and columns already supported this correctly;
+-- only the client-side insert was wrong. See index.html createDirectorate().
