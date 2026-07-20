@@ -1,19 +1,19 @@
 
 const PHOTO_FILES = {"bola-ahmed-tinubu":"photos/bola-ahmed-tinubu.txt","babajimi-adegoke-benson":"photos/babajimi-adegoke-benson.txt","kadri-obafemi-hamzat":"photos/kadri-obafemi-hamzat.txt","damilola-sonayon-james":"photos/damilola-sonayon-james.txt","moruf-i-alli-balogun":"photos/moruf-i-alli-balogun.txt","mudashiru-ajayi-obasa":"photos/mudashiru-ajayi-obasa.txt","dele-osinowo":"photos/dele-osinowo.txt","kolade-david-alabi":"photos/kolade-david-alabi.txt","adebayo-balogun":"photos/adebayo-balogun.txt","toyin-gafar":"photos/toyin-gafar.txt","okanilawon-sanni":"photos/okanilawon-sanni.txt","muritala-seriki":"photos/muritala-seriki.txt","abiodun-tobun":"photos/abiodun-tobun.txt","sylvester-ogunkelu":"photos/sylvester-ogunkelu.txt","o-abiola-olowu":"photos/o-abiola-olowu.txt","oladele-ajayi":"photos/oladele-ajayi.txt","kashim-shettima":"photos/kashim-shettima.txt","mukhail-adetokunbo-abiru":"photos/mukhail-adetokunbo-abiru.txt","idiat-oluranti-adebule":"photos/idiat-oluranti-adebule.txt","mojisola-lasbat-meranda":"photos/mojisola-lasbat-meranda.txt","adedamola-kasumu":"photos/adedamola-kasumu.txt","temitope-adedeji-adewale":"photos/temitope-adedeji-adewale.txt","saad-lukmon-olumoh":"photos/saad-lukmon-olumoh.txt","sabur-akanbi-oluwa":"photos/sabur-akanbi-oluwa.txt","olatunji-lukmon-jimoh-orelope":"photos/olatunji-lukmon-jimoh-orelope.txt","joseph-o-kehinde":"photos/joseph-o-kehinde.txt","rauf-o-age-sulaimon":"photos/rauf-o-age-sulaimon.txt","musibau-lawal":"photos/musibau-lawal.txt","gbolahan-yishawu":"photos/gbolahan-yishawu.txt","adeseyi-lawal":"photos/adeseyi-lawal.txt","moshood-a-aro":"photos/moshood-a-aro.txt","ibrahim-ajani":"photos/ibrahim-ajani.txt","rasheed-shabi":"photos/rasheed-shabi.txt","nureni-akinsanya":"photos/nureni-akinsanya.txt","kazeem-olayinka":"photos/kazeem-olayinka.txt","oluwaseun-adebisi-ege":"photos/oluwaseun-adebisi-ege.txt","orekoya-abiodun":"photos/orekoya-abiodun.txt","lara-olumegbon-lawal":"photos/lara-olumegbon-lawal.txt","suraju-tijani":"photos/suraju-tijani.txt","oladipo-olayinka-ajomale":"photos/oladipo-olayinka-ajomale.txt","oluwagbemiga-abiola-abiola":"photos/oluwagbemiga-abiola-abiola.txt","segun-adeniran-onilude":"photos/segun-adeniran-onilude.txt","benjamin-adeyemi-olabinjo":"photos/benjamin-adeyemi-olabinjo.txt","taiwo-aiyedun":"photos/taiwo-aiyedun.txt","bello-monsuru-oloyede":"photos/bello-monsuru-oloyede.txt","lanre-okunnola":"photos/lanre-okunnola.txt","fuad-kayode-laguda":"photos/fuad-kayode-laguda.txt","muftau-egberongbe":"photos/muftau-egberongbe.txt","dolapo-badru":"photos/dolapo-badru.txt","paul-abioye-kalejaiye":"photos/paul-abioye-kalejaiye.txt","moses-olanrewaju":"photos/moses-olanrewaju.txt","olabisi-adebanjo":"photos/olabisi-adebanjo.txt","james-abiodun-faleke":"photos/james-abiodun-faleke.txt","adeyemi-alli":"photos/adeyemi-alli.txt","moses-oluwatosin-fayinka":"photos/moses-oluwatosin-fayinka.txt","bolaji-kayode-robert":"photos/bolaji-kayode-robert.txt","shakiru-akindele-sule":"photos/shakiru-akindele-sule.txt","folorunsho-ola":"photos/folorunsho-ola.txt","joseph-gbenu":"photos/joseph-gbenu.txt","oladunjoye-bankole-olatunde":"photos/oladunjoye-bankole-olatunde.txt","rasheed-lanre-makinde":"photos/rasheed-lanre-makinde.txt","mayowa-alakija":"photos/mayowa-alakija.txt","fuad-atanda-lawal":"photos/fuad-atanda-lawal.txt","kayode-moshood-akiolu":"photos/kayode-moshood-akiolu.txt","adekunle-omolaja":"photos/adekunle-omolaja.txt","saheed-bankole":"photos/saheed-bankole.txt","yusuf-nurudeen-abiodun":"photos/yusuf-nurudeen-abiodun.txt","barakat-bakare-odunuga":"photos/barakat-bakare-odunuga.txt","damilola-ayinde-marshal":"photos/damilola-ayinde-marshal.txt","wale-raji":"photos/wale-raji.txt","wasiu-sanni-eshinlokun":"photos/wasiu-sanni-eshinlokun.txt"};
 let PHOTOS = {};
-async function loadAllPhotos() {
+async function loadAllPhotos(){
   const entries = Object.entries(PHOTO_FILES);
   await Promise.all(entries.map(async ([slug, path]) => {
     try {
       const res = await fetch(path);
-      if (!res.ok) return;
       const b64 = await res.text();
       PHOTOS[slug] = 'data:image/jpeg;base64,' + b64.trim();
-    } catch (e) { /* photo unavailable, fallback initials will render */ }
+    } catch(e) { /* photo missing, fallback initials will show */ }
   }));
 }
+
+
 const {createClient}=supabase;
-document.addEventListener('DOMContentLoaded',()=>{const lp=document.getElementById('leaderPhotoImg');if(lp&&PHOTOS['bola-ahmed-tinubu'])lp.src=PHOTOS['bola-ahmed-tinubu'];});
 const sb=createClient('https://wfceszismvdghxhfuiaz.supabase.co','sb_publishable_nDhJM7vh9DbOfwsZ2kI3-w_6_wld7hl');
 const ini=n=>(n||'?').replace(/^(Dr\.|Sen\.|Rt\. Hon\.|Hon\.|Princess|Senator)\s+/,'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
@@ -221,7 +221,11 @@ window.addEventListener('resize',()=>{
     b.style.maxHeight=b.scrollHeight+'px';
   });
 });
-loadAllPhotos().then(renderHierarchy);
+loadAllPhotos().then(()=>{
+  renderHierarchy();
+  const lp=document.getElementById('leaderPhotoImg');
+  if(lp&&PHOTOS['bola-ahmed-tinubu'])lp.src=PHOTOS['bola-ahmed-tinubu'];
+});
 
 
 /* ── MODAL ── */
