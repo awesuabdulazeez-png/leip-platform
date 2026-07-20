@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APC Lagos Electoral Intelligence System | LEIP</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tw">
+    <div class="logo-wrap">
+      <div class="apc-circle"><img src="apc-logo.txt" alt="APC" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"></div>
+      <div class="brand-text">
+        <span class="t1">APC LAGOS 2027</span>
+        <span class="t2">Electoral Intelligence System</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="topbar-right" style="display:none" id="topRight">
+      Powered by <b>LEIP</b> · Sponsor: <b>Awesu Dynasty Foundation</b>
+    </div>
+    <button class="nav-cta" onclick="openKeyLogin()" style="margin-right:8px">Coverage Access</button>
+    <button class="nav-cta" onclick="openLogin()">Council Sign In</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-inner">
+    <div class="hero-text fade-up">
+      <div class="eyebrow"><span class="eyebrow-dot"></span>Lagos State · 2027 General Election</div>
+      <h1>Every candidate.<br>Every ward.<br><span class="serif rd" style="font-style:italic;font-weight:500">One command</span><br><span class="gr">structure.</span></h1>
+      <p>The operating record for APC Lagos — from the governorship to all 13,322 polling units, coordinated in one place.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="document.getElementById('candidates').scrollIntoView({behavior:'smooth'})">View All Candidates ↓</button>
+        <button class="btn-outline" onclick="openLogin()">Council Login</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-item"><div class="n">71</div><div class="l">Candidates</div></div>
+        <div class="stat-item"><div class="n">245</div><div class="l">Wards</div></div>
+        <div class="stat-item"><div class="n">13,322</div><div class="l">Polling Units</div></div>
+        <div class="stat-item"><div class="n">71</div><div class="l">Councils</div></div>
+      </div>
+      <div class="leader-strip" onclick="openModal('bola-ahmed-tinubu')">
+        <div class="leader-photo"><img id="leaderPhotoImg" src="" alt="President Bola Ahmed Tinubu" loading="lazy"></div>
+        <div><span class="leader-label">Under the leadership of</span><br><span class="leader-name">President Bola Ahmed Tinubu</span></div>
+      </div>
+    </div>
+    <div class="carousel-wrap fade-up">
+      <div class="carousel-frame" id="carousel">
+        <div class="carousel-arrows">
+          <button class="arrow" onclick="prevSlide()">‹</button>
+          <button class="arrow" onclick="nextSlide()">›</button>
+        </div>
+      </div>
+      <div class="carousel-dots" id="dots"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-label"><span class="pulse-dot"></span>Live Coverage — Lagos State</div>
+  <div class="stats-grid">
+    <div class="stat-box"><div class="big" data-count="3">0</div><div class="lab">Senatorial Districts</div></div>
+    <div class="stat-box"><div class="big" data-count="20">0</div><div class="lab">Local Govt Areas</div></div>
+    <div class="stat-box"><div class="big" data-count="245">0</div><div class="lab">Wards</div></div>
+    <div class="stat-box"><div class="big" data-count="13322">0</div><div class="lab">Polling Units</div></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- CANDIDATES -->
+<section class="section" id="candidates">
+  <div class="section-inner">
+    <div class="section-label">Chain of Command</div>
+    <h2 class="section-title">Structure of Authority</h2>
+    <p class="section-sub">All 71 verified APC candidates for the 2027 General Election, arranged by constitutional hierarchy — from the Presidency down to the State Assembly.</p>
+    <div id="hierarchyRoot"></div>
+  </div>
+</section>
+
+<!-- CANDIDATE MODAL -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<!-- LOGIN SHEET -->
+<div id="loginSheet" onclick="if(event.target===this)closeLogin()">
+  <div class="login-card">
+    <button onclick="closeLogin()" style="float:right;background:none;border:none;color:var(--dim);font-size:22px;cursor:pointer;margin-top:-6px">×</button>
+    <h2>Council Sign In</h2>
+    <p id="loginDesc">Sign in with your password, or request a 6-digit email code.</p>
+    <div id="loginMsg"></div>
+    <div id="loginForm">
+      <div class="field"><label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field" id="pwField"><label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-g" id="loginBtn" onclick="signInPassword()">Sign In →</button>
+      <button class="btn-ghost" onclick="switchToOtp()">Use email code instead</button>
+    </div>
+    <div id="otpForm" style="display:none">
+      <div class="field"><label>6-Digit Code</label>
+        <input class="otp-inp" type="text" id="otpCode" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+      </div>
+      <button class="btn-g" id="otpBtn" onclick="verifyOtp()">Sign In →</button>
+      <button class="btn-ghost" onclick="showLoginForm()">← Use password instead</button>
+      <p class="hint">Code expires in 10 minutes · Check spam if not in inbox</p>
+    </div>
+  </div>
+</div>
+
+<!-- ACCESS KEY LOGIN -->
+<div id="keySheet" onclick="if(event.target===this)closeKeyLogin()">
+  <div class="login-card">
+    <button onclick="closeKeyLogin()" style="float:right;background:none;border:none;color:var(--dim);font-size:22px;cursor:pointer;margin-top:-6px">×</button>
+    <h2>Coverage Access</h2>
+    <p id="keyDesc">Enter the access key you were given — one per candidate, one per LGA. No email or account needed.</p>
+    <div id="keyMsg"></div>
+    <div class="field"><label>Access Key</label>
+      <input type="text" id="keyInput" placeholder="e.g. 6RSCZ787" maxlength="10" autocomplete="off"
+        style="text-transform:uppercase;font-family:'IBM Plex Mono',monospace;letter-spacing:2px;font-weight:700"
+        onkeydown="if(event.key==='Enter')submitAccessKey()">
+    </div>
+    <button class="btn-g" id="keyBtn" onclick="submitAccessKey()">View Coverage →</button>
+  </div>
+</div>
+
+<!-- ACCESS KEY COVERAGE RESULT -->
+<div id="keyResultSheet">
+  <div class="cs-head">
+    <div style="max-width:700px;margin:0 auto;display:flex;align-items:center;gap:14px">
+      <button onclick="closeKeyResult()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:22px">←</button>
+      <div>
+        <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;color:#fff" id="keyResultTitle"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,.65)" id="keyResultSubtitle"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cs-inner" id="keyResultBody"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashSheet">
+  <div class="dash-head">
+    <div class="apc-circle" style="width:36px;height:36px"><img src="apc-logo.txt" alt="APC" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"></div>
+    <div>
+      <div class="title">Your Campaign Councils</div>
+      <div class="sub" id="dashEmail"></div>
+    </div>
+    <button class="dash-so" onclick="signOut()">Sign Out</button>
+  </div>
+  <div class="dash-inner">
+    <div id="dashCouncils"><p style="color:var(--dim)">Loading…</p></div>
+  </div>
+</div>
+
+<!-- COUNCIL DETAIL -->
+<div id="councilSheet">
+  <div class="cs-head">
+    <div style="max-width:700px;margin:0 auto;display:flex;align-items:center;gap:14px">
+      <button onclick="showDash()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:22px">←</button>
+      <div>
+        <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;color:#fff" id="csTitle"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,.65)" id="csOffice"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cs-inner" id="csBody"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="sf-inner">
+    <div class="sf-top">
+      <div class="sf-brand">
+        <div class="name">APC Lagos 2027</div>
+        <div class="tagline">Nigeria's first Executive Campaign Intelligence Operating System — built to connect every candidate, constituency and polling unit across Lagos State.</div>
+      </div>
+    </div>
+    <div class="sf-bottom">
+      <div>All Progressives Congress — Lagos State Chapter · 2027 General Election</div>
+      <div>Platform: <b>APC Lagos Electoral Intelligence System (ALEIS), powered by LEIP</b> · Sponsor: <b>Awesu Dynasty Foundation</b></div>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
